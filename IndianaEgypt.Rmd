@@ -1,0 +1,15 @@
+---
+title: "IndianaEgypt"
+author: "Sophia Freuden"
+date: "2023-06-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+
+```
+
