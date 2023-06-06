@@ -54,7 +54,7 @@ corpus <- tm_map(corpus, stripWhitespace)
 
 corpus <- tm_map(corpus, content_transformer(tolower))
 
-# corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeNumbers)
 # Because the G20 and other alphanumeric IOs are an important
 # topic, we might want keep numbers in the dataset.
 
@@ -122,7 +122,7 @@ sums2d <- unique(sums2d)
 # in order to graph word frequency plots
 
 # non-stemmed
-choice2 <- sums2 %>% select(c(ArtDate, africa, URL))
+choice2 <- sums2 %>% select(c(ArtDate, sudan, URL))
 choice2 <- unique(choice2)
 # view(choice2)
 
@@ -146,13 +146,13 @@ choice2d <- unique(choice2d)
 choice2 %>%
   # The group_by and summarise below sum the articles by date. Alt version c'd out below.
   group_by(ArtDate) %>% 
-  summarise(Frequency = sum(africa)) %>%
+  summarise(Frequency = sum(sudan)) %>%
   ggplot(aes(x = ArtDate, y = Frequency)) +
   geom_point() +
   # geom_smooth(method = 'loess') +
   labs(
     title = "Term Frequency Per Day Over Time",
-    subtitle = "Term: 'Africa', RT Search Term: Egypt",
+    subtitle = "Term: 'Sudan', RT Search Term: Egypt",
     x = "Date",
     y = "Frequency"
     # Comment/uncomment caption below as needed. Add/delete comma in line above, too.
@@ -162,7 +162,7 @@ choice2 %>%
   # %b above specifies month abbrev. and %Y is full year
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave("images/africa.png", width = 6, dpi = 400)
+ggsave("images/sudan.png", width = 6, dpi = 400)
 ```
 
 ```{r}
