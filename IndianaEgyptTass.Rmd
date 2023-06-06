@@ -34,14 +34,21 @@ col_types = cols(
 data <- read_delim("data/TASS_ru_egypt1.txt", delim = "*", col_types = col_types)
 ```
 
-```{r}
+```{r warning=FALSE}
+# make sure you've cleaned the .txt file (both months and time
+# stamps) before running this code chunk
 data <- data %>%
   mutate(date = dmy(date))
 ```
 
 ```{r}
+# filtering out rows with na date
 data <- data %>%
   filter(!is.na(date))
+```
+
+```{r}
+
 ```
 
 
