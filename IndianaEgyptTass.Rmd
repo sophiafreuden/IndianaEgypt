@@ -48,7 +48,80 @@ data <- data %>%
 ```
 
 ```{r}
+corpus <- SimpleCorpus(VectorSource(data$content))
+```
 
+```{r warning=FALSE}
+corpus <- tm_map(corpus, stripWhitespace)
+
+corpus <- tm_map(corpus, content_transformer(tolower))
+
+corpus <- tm_map(corpus, removeNumbers)
+
+corpus <- tm_map(corpus, removePunctuation)
+
+corpus <- tm_map(corpus, removeWords, stopwords("russian"))
+```
+
+```{r}
+nonstem.corpus <- corpus
+
+# view(nonstem.corpus)
+```
+
+```{r}
+nDTM <- DocumentTermMatrix(nonstem.corpus)
+```
+
+```{r}
+sums <- as.data.frame(colSums(as.matrix(nDTM)))
+sums <- rownames_to_column(sums) 
+colnames(sums) <- c("word", "count")
+sums <- arrange(sums, desc(count))
+head <- sums[1:75,]
+
+# view(head)
+
+sums2 <- as.data.frame(as.matrix(nDTM))
+```
+
+```{r}
+sums2$ArtDate <- data$date
+sums2$URL <- data$URL
+sums2 <- unique(sums2)
+
+# view(sums2)
+```
+
+```{r}
+choice2 <- sums2 %>% select(c(ArtDate, китай, URL))
+choice2 <- unique(choice2)
+```
+
+```{r}
+sums2 %>%
+  group_by(ArtDate) %>% 
+  summarise(Frequency = sum(китай)) %>%
+  ggplot(aes(x = ArtDate, y = Frequency)) +
+  geom_point() +
+  labs(
+    title = "Term Frequency Per Day Over Time",
+    subtitle = "Term: 'китай' (China), TASS Search Term: 'египет' (Egypt)",
+    x = "Date",
+    y = "Frequency"
+    # Comment/uncomment caption as neeed
+    # caption = "Declined terms combined."
+  ) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  # %b above specifies month abbrev. and %Y is full year
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave("tass_images/china.png", width = 6, dpi = 500)
+```
+
+```{r}
+# Change min.freq below as needed per resultsno pulled from Python scrape.
+wordcloud(words = head$word, freq = head$count, scale =c(2.5,.5), min.freq = 300,max.words=120, random.order=FALSE, rot.per=0.35, colors=c("black", "purple", "orange", "lightgreen"))
 ```
 
 
