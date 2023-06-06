@@ -79,7 +79,6 @@ sums <- rownames_to_column(sums)
 colnames(sums) <- c("word", "count")
 sums <- arrange(sums, desc(count))
 head <- sums[1:75,]
-
 # view(head)
 
 sums2 <- as.data.frame(as.matrix(nDTM))
@@ -94,19 +93,19 @@ sums2 <- unique(sums2)
 ```
 
 ```{r}
-choice2 <- sums2 %>% select(c(ArtDate, китай, URL))
+choice2 <- sums2 %>% select(c(ArtDate, россии, URL))
 choice2 <- unique(choice2)
 ```
 
 ```{r}
-sums2 %>%
+choice2 %>%
   group_by(ArtDate) %>% 
-  summarise(Frequency = sum(китай)) %>%
+  summarise(Frequency = sum(россии)) %>%
   ggplot(aes(x = ArtDate, y = Frequency)) +
   geom_point() +
   labs(
     title = "Term Frequency Per Day Over Time",
-    subtitle = "Term: 'китай' (China), TASS Search Term: 'египет' (Egypt)",
+    subtitle = "Term: 'россии' (Russia), TASS Search Term: 'египет' (Egypt)",
     x = "Date",
     y = "Frequency"
     # Comment/uncomment caption as neeed
@@ -116,7 +115,7 @@ sums2 %>%
   # %b above specifies month abbrev. and %Y is full year
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave("tass_images/china.png", width = 6, dpi = 500)
+ggsave("tass_images/russia2.png", width = 6, dpi = 500)
 ```
 
 ```{r}
