@@ -10,6 +10,70 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
-
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(RCurl)
+library(textclean)
+library(lubridate)
+library(tidyverse)
+library(readxl)
 ```
+
+```{r}
+data <- read.csv("data/RT_eng_egypt.csv")
+```
+
+```{r}
+data <- data %>%
+  mutate(date = dmy(date))
+```
+
+```{r}
+# removing unwanted data from January 2022
+data <- data[-c(271,272),]
+```
+
+```{r}
+Encoding(data$content) <- "latin1"
+
+data$content <- replace_non_ascii(data$content)
+```
+
+```{r}
+corpus <- SimpleCorpus(VectorSource(data$content))
+
+# view(corpus) For some reason, view() throws an error
+# clicking on the "corpus" item in the environment
+# does work, however.
+```
+
+```{r}
+corpus <- tm_map(corpus, stripWhitespace)
+
+corpus <- tm_map(corpus, content_transformer(tolower))
+
+# corpus <- tm_map(corpus, removeNumbers)
+# Because the G20 and other alphanumeric IOs are an important
+# topic, we might want keep numbers in the dataset.
+
+corpus <- tm_map(corpus, removePunctuation)
+
+corpus <- tm_map(corpus, removeWords, stopwords("english"))
+
+# If you get "Warning: transformation drops documents" after each
+# line renders, that's okay, it's just letting you know that it's
+# dropping data which is what you want
+```
+
+```{r}
+# unclear if stemming it really helps, but it's here if you want
+# it later
+
+nonstem.corpus <- corpus
+
+corpus <- tm_map(corpus, stemDocument)
+```
+
 
