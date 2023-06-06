@@ -1,0 +1,48 @@
+---
+title: "IndianaEgyptTass"
+author: "Sophia Freuden"
+date: "2023-06-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(RCurl)
+library(textclean)
+library(lubridate)
+library(tidyverse)
+library(corpus)
+```
+
+```{r}
+col_types = cols(
+  date = col_character(),
+  title = col_character(),
+  content = col_character(),
+  URL = col_character()
+)
+```
+
+```{r}
+data <- read_delim("data/TASS_ru_egypt1.txt", delim = "*", col_types = col_types)
+```
+
+```{r}
+data <- data %>%
+  mutate(date = dmy(date))
+```
+
+```{r}
+data <- data %>%
+  filter(!is.na(date))
+```
+
+
+
