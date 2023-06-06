@@ -76,4 +76,102 @@ nonstem.corpus <- corpus
 corpus <- tm_map(corpus, stemDocument)
 ```
 
+```{r}
+DTM <- DocumentTermMatrix(corpus)
+# view(DTM) Same issues as above with view() specifically,
+# but inspect works just fine.
+# inspect(DTM)
+```
+
+```{r}
+nDTM <- DocumentTermMatrix(nonstem.corpus)
+# inspect(nDTM)
+```
+
+```{r}
+sums <- as.data.frame(colSums(as.matrix(nDTM)))
+sums <- rownames_to_column(sums)
+colnames(sums) <- c("term", "count")
+sums <- arrange(sums, desc(count))
+head <- sums[1:75,]
+
+sums2 <- as.data.frame(as.matrix(nDTM))
+sums2d <- as.data.frame(as.matrix(DTM))
+```
+
+```{r}
+# redundancy eliminator
+# Adding date and URL columns to the two data frames. The URL
+# serves as a unique ID that can help to eliminate any duplicates
+
+sums2$ArtDate <- data$date
+sums2d$ArtDate <- data$date
+
+sums2$URL <- data$URL
+sums2 <- unique(sums2)
+
+sums2d$URL <- data$URL
+sums2d <- unique(sums2d)
+```
+
+```{r}
+# make sure you pick words (columns) that would actually
+# be present in your articles
+
+# YOU MUST change the word in the choice variables below
+# in order to graph word frequency plots
+
+# non-stemmed
+choice2 <- sums2 %>% select(c(ArtDate, china, URL))
+choice2 <- unique(choice2)
+# view(choice2)
+
+# stemmed
+choice2d <- sums2d %>% select(c(ArtDate, sanction, URL))
+choice2d <- unique(choice2d)
+# view(choice2d)
+
+# the view functions above will allow you to see the articles
+# that mention a given term the most (or least)
+```
+
+```{r}
+# Summed per date. Change between choice2 and choice2d (stemmed) as needed.
+
+# CHANGE BELOW:
+# term in sum() below and
+# 'Term' and 'RT Seach Term' to whatever term/search term your data is based on.
+# Make sure to also change the png file name/location as needed.
+
+choice2 %>%
+  # The group_by and summarise below sum the articles by date. Alt version c'd out below.
+  group_by(ArtDate) %>% 
+  summarise(Frequency = sum(china)) %>%
+  ggplot(aes(x = ArtDate, y = Frequency)) +
+  geom_point() +
+  # geom_smooth(method = 'loess') +
+  labs(
+    title = "Term Frequency Per Day Over Time",
+    subtitle = "Term: 'China', RT Search Term: Indonesia",
+    x = "Date",
+    y = "Frequency"
+    # Comment/uncomment caption below as needed. Add/delete comma in line above, too.
+    # caption = "Stemmed."
+  ) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  # %b above specifies month abbrev. and %Y is full year
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave("images/china.png", width = 6, dpi = 400)
+```
+
+```{r}
+wordcloud(words = head$term, freq = head$count, scale=c(2,.5), min.freq = 15, max.words=100, random.order=FALSE, rot.per=0.35, colors=c("black", "purple", "orange", "lightgreen"), main="Title")
+
+# This must be saved manually (right click the image when it appears.)
+```
+
+
+
+
 
