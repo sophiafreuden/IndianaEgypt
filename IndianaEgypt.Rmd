@@ -122,9 +122,9 @@ sums2d <- unique(sums2d)
 # in order to graph word frequency plots
 
 # non-stemmed
-choice2 <- sums2 %>% select(c(ArtDate, american, URL))
+choice2 <- sums2 %>% select(c(ArtDate, egypt, URL))
 choice2 <- unique(choice2)
-# view(choice2)
+view(choice2)
 
 # stemmed
 choice2d <- sums2d %>% select(c(ArtDate, sanction, URL))
